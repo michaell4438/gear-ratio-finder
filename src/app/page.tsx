@@ -31,10 +31,10 @@ export default function Home() {
             <p className={"my-auto"}>(degrees)</p>
           </div>
           <div className={`flex-row ${areValuesValid(bar1Length, bar2Length, armDistance, backdropAngle) ? 'flex' : 'hidden'}`}>
-            <p className={"text-green-400"}>Best gear ratio: {calculateBestGearRatio(parseInt(bar1Length), parseInt(bar2Length), parseInt(armDistance), parseInt(backdropAngle))}</p>
+            <p className={"text-green-400"}>Best gear ratio: {calculateBestGearRatio(parseFloat(bar1Length), parseFloat(bar2Length), parseFloat(armDistance), parseFloat(backdropAngle))}</p>
           </div>
           <div className={`${areValuesValid(bar1Length, bar2Length, armDistance, backdropAngle) ? 'hidden' : 'flex'}`}>
-            <p className={"text-red-500"}>Error: all values must be non-zero integers</p>
+            <p className={"text-red-500"}>Error: all values must be positive, non-zero numbers</p>
           </div>
         </div>
       </main>
@@ -42,13 +42,12 @@ export default function Home() {
 }
 
 function areValuesValid(bar1Length: string, bar2Length: string, armDistance: string, backdropAngle: string): boolean {
-  const bar1 = parseInt(bar1Length);
-  const bar2 = parseInt(bar2Length);
-  const arm = parseInt(armDistance);
-  const angle = parseInt(backdropAngle);
+  const bar1 = parseFloat(bar1Length);
+  const bar2 = parseFloat(bar2Length);
+  const arm = parseFloat(armDistance);
+  const angle = parseFloat(backdropAngle);
 
-  return bar1 > 0 && bar2 > 0 && arm > 0 && angle > 0 &&
-         Number.isInteger(bar1) && Number.isInteger(bar2) && Number.isInteger(arm) && Number.isInteger(angle);
+  return bar1 > 0 && bar2 > 0 && arm > 0 && angle > 0;
 }
 
 /**

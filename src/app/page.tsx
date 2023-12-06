@@ -10,7 +10,7 @@ export default function Home() {
   const [backdropAngle, setBackdropAngle] = useState("0");
 
   return (
-      <main className={"flex h-full w-full flex-col justify-between pt-6 pb-12"}>
+      <main className={"flex h-full w-full flex-col justify-between pt-6 pb-12 overflow-x-hidden"}>
         <DividedHeader title={"Gear Ratio Finder"} subtitle={"By Michael Lachut"}/>
         <div className={"grid grid-cols-2 ml-12 mt-8"}>
           <div className={"grid grid-cols-5"}>

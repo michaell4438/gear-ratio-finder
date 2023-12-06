@@ -31,7 +31,10 @@ export default function Home() {
             <p className={"my-auto"}>(degrees)</p>
           </div>
           <div className={`flex-row ${areValuesValid(bar1Length, bar2Length, armDistance, backdropAngle) ? 'flex' : 'hidden'}`}>
-            <p>Best gear ratio: {calculateBestGearRatio(parseInt(bar1Length), parseInt(bar2Length), parseInt(armDistance), parseInt(backdropAngle))}</p>
+            <p className={"text-green-400"}>Best gear ratio: {calculateBestGearRatio(parseInt(bar1Length), parseInt(bar2Length), parseInt(armDistance), parseInt(backdropAngle))}</p>
+          </div>
+          <div className={`${areValuesValid(bar1Length, bar2Length, armDistance, backdropAngle) ? 'hidden' : 'flex'}`}>
+            <p className={"text-red-500"}>Error: all values must be non-zero integers</p>
           </div>
         </div>
       </main>

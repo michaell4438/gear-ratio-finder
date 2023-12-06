@@ -1,27 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+  --foreground-rgb: 200, 200, 200;
+  --background-rgb: 0, 10, 15;
 }
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background: rgb(var(--background-rgb));
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: bold;
+  font-family: monospace;
+}
+
+p {
+  font-family: "Source Code Pro", monospace;
+}
+
+button {
+  font-family: "Source Code Pro", monospace;
+  font-weight: bold;
+  padding: 8px;
+  margin: 4px;
+  border-color: cornflowerblue;
+  border-radius: 16px;
+  border-width: 2px;
+  width: max-content;
+}
+
+input {
+  background-color: black;
+  border-color: rgb(200, 200, 200);
+  border-width: 2px;
+  padding: 4px;
 }

@@ -1,113 +1,141 @@
-import Image from 'next/image'
+"use client"
+
+import {DividedHeader} from "@/components/DividedHeader";
+import {useState} from "react";
 
 export default function Home() {
+  const [bar1Length, setBar1Length] = useState("0");
+  const [bar2Length, setBar2Length] = useState("0");
+  const [armDistance, setArmDistance] = useState("0");
+  const [backdropAngle, setBackdropAngle] = useState("0");
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+      <main className={"flex h-full w-full flex-col justify-between pt-6 pb-12"}>
+        <DividedHeader title={"Gear Ratio Finder"} subtitle={"By Michael Lachut"}/>
+        <div className={"grid grid-cols-2 ml-12 mt-8"}>
+          <div className={"grid grid-cols-5"}>
+            <p className={"my-auto col-span-3"}>Bar 1 length: </p>
+            <input className={"m-2"} inputMode={"decimal"} type={"number"} step={0.5} value={bar1Length} placeholder={"inches"} onChange={event => setBar1Length(event.target.value)}/>
+            <p className={"my-auto"}>(inches)</p>
+
+            <p className={"my-auto col-span-3"}>Bar 2 length: </p>
+            <input className={"m-2"} inputMode={"decimal"} type={"number"} step={0.5} value={bar2Length} placeholder={"inches"} onChange={event => setBar2Length(event.target.value)}/>
+            <p className={"my-auto"}>(inches)</p>
+
+            <p className={"my-auto col-span-3"}>Distance from backdrop to arm rotation axis: </p>
+            <input className={"m-2"} inputMode={"decimal"} type={"number"} step={0.5} value={armDistance} placeholder={"inches"} onChange={event => setArmDistance(event.target.value)}/>
+            <p className={"my-auto"}>(inches)</p>
+
+            <p className={"my-auto col-span-3"}>Backdrop Angle: </p>
+            <input className={"m-2"} inputMode={"decimal"} type={"number"} step={0.5} value={backdropAngle} placeholder={"degrees"} onChange={event => setBackdropAngle(event.target.value)}/>
+            <p className={"my-auto"}>(degrees)</p>
+          </div>
+          <div className={`flex-row ${areValuesValid(bar1Length, bar2Length, armDistance, backdropAngle) ? 'flex' : 'hidden'}`}>
+            <p>Best gear ratio: {calculateBestGearRatio(parseInt(bar1Length), parseInt(bar2Length), parseInt(armDistance), parseInt(backdropAngle))}</p>
+          </div>
         </div>
-      </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+      </main>
   )
+}
+
+function areValuesValid(bar1Length: string, bar2Length: string, armDistance: string, backdropAngle: string): boolean {
+  const bar1 = parseInt(bar1Length);
+  const bar2 = parseInt(bar2Length);
+  const arm = parseInt(armDistance);
+  const angle = parseInt(backdropAngle);
+
+  return bar1 > 0 && bar2 > 0 && arm > 0 && angle > 0 &&
+         Number.isInteger(bar1) && Number.isInteger(bar2) && Number.isInteger(arm) && Number.isInteger(angle);
+}
+
+/**
+ * Calculates the angle of bar 2 based on the angle of bar 1 and the gear ratio.
+ * @param bar1Angle The angle of bar 1. 0 = straight up, 90 = flat.
+ * @param gearRatio The gear ratio of the arm.
+ */
+function calculateBar2Angle(bar1Angle: number, gearRatio: number): number {
+  return 90 + (gearRatio * (90 - bar1Angle));
+}
+
+/**
+ * Calculates the height of bar 2 based on the angle of bar 2 and the length of bar 2.
+ * @param bar1Angle The angle of bar 1. 0 = straight up, 90 = flat.
+ * @param bar1Length The length of bar 1.
+ * @param bar2Length The length of bar 2.
+ * @param gearRatio The gear ratio of the arm.
+ */
+function calculateBar2Height(bar1Angle: number, bar1Length: number, bar2Length: number, gearRatio: number): number {
+  const bar2Angle = calculateBar2Angle(bar1Angle, gearRatio);
+  const bar1Height = Math.sin(bar1Angle) * bar1Length;
+  const bar2Height = Math.sin(bar2Angle) * bar2Length;
+  return bar1Height + bar2Height;
+}
+
+/**
+ * Calculates the horizontal distance between the arm rotation axis and the backdrop.
+ * @param bar1Angle The angle of bar 1. 0 = straight up, 90 = flat.
+ * @param bar1Length The length of bar 1.
+ * @param bar2Length The length of bar 2.
+ * @param gearRatio The gear ratio of the arm.
+ */
+function calculateHorizontalDistance(bar1Angle: number, bar1Length: number, bar2Length: number, gearRatio: number): number {
+  const bar2Angle = calculateBar2Angle(bar1Angle, gearRatio);
+  const bar1Len = Math.cos(bar1Angle) * bar1Length;
+  const bar2Len = Math.cos(bar2Angle) * bar2Length;
+  return bar1Len + bar2Len;
+}
+
+/**
+ * Determines if the arm is touching the backdrop.
+ * @param bar1Angle The angle of bar 1. 0 = straight up, 90 = flat.
+ * @param bar1Length The length of bar 1.
+ * @param bar2Length The length of bar 2.
+ * @param gearRatio The gear ratio of the arm.
+ * @param backdropAngle The angle of the backdrop. 0 = flat, 90 = straight up.
+ * @param pivotOffset The distance from the arm rotation axis to the base of the backdrop.
+ */
+function isTouchingBackdrop(bar1Angle: number, bar1Length: number, bar2Length: number, gearRatio: number, backdropAngle: number, pivotOffset: number): boolean {
+  const bar2Angle = calculateBar2Angle(bar1Angle, gearRatio);
+  const bar1Height = Math.sin(bar1Angle) * bar1Length;
+  const bar2Height = Math.sin(bar2Angle) * bar2Length;
+  const bar1Len = Math.cos(bar1Angle) * bar1Length;
+  const bar2Len = Math.cos(bar2Angle) * bar2Length;
+  const armHeight = bar1Height + bar2Height;
+  const armLen = bar1Len + bar2Len;
+  const backdropHeight = Math.sin(backdropAngle) * pivotOffset;
+  const backdropLen = Math.cos(backdropAngle) * pivotOffset;
+  return armHeight >= backdropHeight && armLen >= backdropLen;
+}
+
+/**
+ * Calculates the best gear ratio for the arm so that it can reach the backdrop.
+ * @param bar1Length The length of bar 1.
+ * @param bar2Length The length of bar 2.
+ * @param armDistance The distance from the arm rotation axis to the base of the backdrop.
+ * @param backdropAngle The angle of the backdrop. 0 = flat, 90 = straight up.
+ */
+function calculateBestGearRatio(bar1Length: number, bar2Length: number, armDistance: number, backdropAngle: number): number {
+  let bestRatio = 0;
+  let bestHeight = 0;
+  let bestLen = 0;
+  for (let ratio = 0; ratio < 10; ratio += 0.01) {
+    const bar1Angle = 90 - (ratio * 90);
+    const bar2Angle = calculateBar2Angle(bar1Angle, ratio);
+    const bar1Height = Math.sin(bar1Angle) * bar1Length;
+    const bar2Height = Math.sin(bar2Angle) * bar2Length;
+    const bar1Len = Math.cos(bar1Angle) * bar1Length;
+    const bar2Len = Math.cos(bar2Angle) * bar2Length;
+    const armHeight = bar1Height + bar2Height;
+    const armLen = bar1Len + bar2Len;
+    const backdropHeight = Math.sin(backdropAngle) * armDistance;
+    const backdropLen = Math.cos(backdropAngle) * armDistance;
+    if (armHeight >= backdropHeight && armLen >= backdropLen) {
+      if (armHeight > bestHeight && armLen > bestLen) {
+        bestRatio = ratio;
+        bestHeight = armHeight;
+        bestLen = armLen;
+      }
+    }
+  }
+  return bestRatio;
 }

@@ -7,14 +7,15 @@ export default function Home() {
   const [bar1Length, setBar1Length] = useState("0");
   const [bar2Length, setBar2Length] = useState("0");
   const [armDistance, setArmDistance] = useState("0");
+  const [heightOffset, setHeightOffset] = useState("0");
   const [backdropAngle, setBackdropAngle] = useState("0");
   const [motorRPM, setMotorRPM] = useState("0");
 
   let bestGearRatio = null as number | null;
   let bestHeight = null as number | null;
 
-  if (areValuesValid(bar1Length, bar2Length, armDistance, backdropAngle, motorRPM)) {
-    const result = calculateBestGearRatio(parseFloat(bar1Length), parseFloat(bar2Length), parseFloat(armDistance), parseFloat(backdropAngle), parseFloat(motorRPM));
+  if (areValuesValid(bar1Length, bar2Length, armDistance, heightOffset, backdropAngle, motorRPM)) {
+    const result = calculateBestGearRatio(parseFloat(bar1Length), parseFloat(bar2Length), parseFloat(armDistance), parseFloat(heightOffset), parseFloat(backdropAngle), parseFloat(motorRPM));
     bestGearRatio = result[0];
     bestHeight = result[1];
 
@@ -27,7 +28,7 @@ export default function Home() {
   return (
       <main className={"flex h-full w-full flex-col justify-between pt-6 pb-12 overflow-x-hidden"}>
         <DividedHeader title={"Gear Ratio Finder"} subtitle={"By Michael Lachut"}/>
-        <div className={"grid grid-cols-2 ml-12 mt-8"}>
+        <div className={"md:grid md:grid-cols-2 ml-12 mt-8"}>
           <div className={"grid grid-cols-5"}>
             <p className={"my-auto col-span-3"}>Bar 1 length: </p>
             <input className={"m-2"} inputMode={"decimal"} type={"number"} step={0.5} value={bar1Length} placeholder={"inches"} onChange={event => setBar1Length(event.target.value)}/>
@@ -39,6 +40,10 @@ export default function Home() {
 
             <p className={"my-auto col-span-3"}>Distance from backdrop to arm rotation axis: </p>
             <input className={"m-2"} inputMode={"decimal"} type={"number"} step={0.5} value={armDistance} placeholder={"inches"} onChange={event => setArmDistance(event.target.value)}/>
+            <p className={"my-auto"}>(inches)</p>
+
+            <p className={"my-auto col-span-3"}>Height of arm pivot point: </p>
+            <input className={"m-2"} inputMode={"decimal"} type={"number"} step={0.5} value={heightOffset} placeholder={"inches"} onChange={event => setHeightOffset(event.target.value)}/>
             <p className={"my-auto"}>(inches)</p>
 
             <p className={"my-auto col-span-3"}>Backdrop Angle: </p>
@@ -62,14 +67,15 @@ export default function Home() {
   )
 }
 
-function areValuesValid(bar1Length: string, bar2Length: string, armDistance: string, backdropAngle: string, motorRPM: string): boolean {
+function areValuesValid(bar1Length: string, bar2Length: string, armDistance: string, heightOffset: string, backdropAngle: string, motorRPM: string): boolean {
   const bar1 = parseFloat(bar1Length);
   const bar2 = parseFloat(bar2Length);
   const arm = parseFloat(armDistance);
+  const height = parseFloat(heightOffset);
   const angle = parseFloat(backdropAngle);
   const rpm = parseFloat(motorRPM);
 
-  return bar1 > 0 && bar2 > 0 && arm > 0 && angle > 0 && rpm > 0;
+  return bar1 > 0 && bar2 > 0 && arm > 0 && height > 0 && angle > 0 && rpm > 0;
 }
 
 /**
@@ -78,11 +84,11 @@ function areValuesValid(bar1Length: string, bar2Length: string, armDistance: str
  * @param bar1Length The length of bar 1.
  * @param bar2Length The length of bar 2.
  * @param gearRatio The gear ratio of the arm.
- * @param armDistance The distance from the arm rotation axis to the base of the backdrop.
+ * @param heightOffset The distance from the arm rotation axis to the base of the backdrop.
  * @param motorRPM The RPM of the motor.
  */
-function calculateVerticalDistance(t: number, bar1Length: number, bar2Length: number, gearRatio: number, armDistance: number, motorRPM: number): number {
-  return bar2Length * Math.sin(t * gearRatio * ((motorRPM * Math.PI)/840)) + bar1Length * Math.sin((motorRPM * Math.PI * t) / 840)
+function calculateVerticalDistance(t: number, bar1Length: number, bar2Length: number, gearRatio: number, heightOffset: number, motorRPM: number): number {
+  return bar2Length * Math.sin(t * gearRatio * ((motorRPM * Math.PI)/840)) + bar1Length * Math.sin((motorRPM * Math.PI * t) / 840) + heightOffset;
 }
 
 /**
@@ -114,10 +120,11 @@ function isTouchingBackdrop(verticalDistance: number, horizontalDistance: number
  * @param bar1Length The length of bar 1.
  * @param bar2Length The length of bar 2.
  * @param armDistance The distance from the arm rotation axis to the base of the backdrop.
+ * @param heightOffset The height of the arm rotation axis.
  * @param backdropAngle The angle of the backdrop. 0 = flat, 90 = straight up.
  * @param motorRPM The RPM of the motor.
  */
-function calculateBestGearRatio(bar1Length: number, bar2Length: number, armDistance: number, backdropAngle: number, motorRPM: number): number[] {
+function calculateBestGearRatio(bar1Length: number, bar2Length: number, armDistance: number, heightOffset: number, backdropAngle: number, motorRPM: number): number[] {
   let bestRatio = 0;
   let bestHeight = 0;
   let bestLen = 0;
@@ -125,7 +132,7 @@ function calculateBestGearRatio(bar1Length: number, bar2Length: number, armDista
     // Evaluate the highest value of t where it touches the backdrop.
     for (let t = 0; t < 100; t += 0.01) {
       const verticalDistance = calculateVerticalDistance(t, bar1Length, bar2Length, ratio, armDistance, motorRPM);
-      const horizontalDistance = calculateHorizontalDistance(t, bar1Length, bar2Length, ratio, armDistance, motorRPM);
+      const horizontalDistance = calculateHorizontalDistance(t, bar1Length, bar2Length, ratio, heightOffset, motorRPM);
       if (isTouchingBackdrop(verticalDistance, horizontalDistance, backdropAngle)) {
         if (verticalDistance > bestHeight) {
           bestHeight = verticalDistance;

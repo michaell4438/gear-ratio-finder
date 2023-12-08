@@ -27,7 +27,7 @@ export default function Home() {
   // @ts-ignore
   return (
       <main className={"flex h-full w-full flex-col justify-between pt-6 pb-12 overflow-x-hidden"}>
-        <DividedHeader title={"Gear Ratio Finder"} subtitle={"By Michael Lachut"}/>
+        <DividedHeader title={"4 Bar Linkage Gear Ratio Tool"} subtitle={"By Michael Lachut"}/>
         <div className={"md:grid md:grid-cols-2 ml-12 mt-8"}>
           <div className={"grid grid-cols-5"}>
             <p className={"my-auto col-span-3"}>Bar 1 length: </p>

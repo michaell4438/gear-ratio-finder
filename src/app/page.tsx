@@ -75,7 +75,7 @@ function areValuesValid(bar1Length: string, bar2Length: string, armDistance: str
   const angle = parseFloat(backdropAngle);
   const rpm = parseFloat(motorRPM);
 
-  return bar1 > 0 && bar2 > 0 && arm > 0 && height > 0 && angle > 0 && rpm > 0;
+  return bar1 > 0 && bar2 > 0 && arm > 0 && height >= 0 && angle > 0 && rpm > 0;
 }
 
 /**

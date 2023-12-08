@@ -10,6 +10,20 @@ export default function Home() {
   const [backdropAngle, setBackdropAngle] = useState("0");
   const [motorRPM, setMotorRPM] = useState("0");
 
+  let bestGearRatio = null as number | null;
+  let bestHeight = null as number | null;
+
+  if (areValuesValid(bar1Length, bar2Length, armDistance, backdropAngle, motorRPM)) {
+    const result = calculateBestGearRatio(parseFloat(bar1Length), parseFloat(bar2Length), parseFloat(armDistance), parseFloat(backdropAngle), parseFloat(motorRPM));
+    bestGearRatio = result[0];
+    bestHeight = result[1];
+
+    // convert bestGearRatio and bestHeight to only 2 decimal places
+    bestGearRatio = Math.round(bestGearRatio * 100) / 100;
+    bestHeight = Math.round(bestHeight * 100) / 100;
+  }
+
+  // @ts-ignore
   return (
       <main className={"flex h-full w-full flex-col justify-between pt-6 pb-12 overflow-x-hidden"}>
         <DividedHeader title={"Gear Ratio Finder"} subtitle={"By Michael Lachut"}/>
@@ -35,10 +49,12 @@ export default function Home() {
             <input className={"m-2"} inputMode={"decimal"} type={"number"} step={10} value={motorRPM} placeholder={"rpm"} onChange={event => setMotorRPM(event.target.value)}/>
             <p className={"my-auto"}>(rpm)</p>
           </div>
-          <div className={`flex-row ${areValuesValid(bar1Length, bar2Length, armDistance, backdropAngle, motorRPM) ? 'flex' : 'hidden'}`}>
-            <p className={"text-green-400"}>Best gear ratio: {calculateBestGearRatio(parseFloat(bar1Length), parseFloat(bar2Length), parseFloat(armDistance), parseFloat(backdropAngle), parseFloat(motorRPM))}</p>
+          <div className={`${bestGearRatio != null && bestHeight != null ? 'block' : 'hidden'}`}>
+            <p className={"text-green-400"}>Best gear ratio: {bestGearRatio}</p>
+
+            <p className={"text-green-400"}>Best height: {bestHeight} inches</p>
           </div>
-          <div className={`${areValuesValid(bar1Length, bar2Length, armDistance, backdropAngle, motorRPM) ? 'hidden' : 'flex'}`}>
+          <div className={`${bestGearRatio != null && bestHeight != null ? 'hidden' : 'block'}`}>
             <p className={"text-red-500"}>Error: all values must be positive, non-zero numbers</p>
           </div>
         </div>
@@ -101,7 +117,7 @@ function isTouchingBackdrop(verticalDistance: number, horizontalDistance: number
  * @param backdropAngle The angle of the backdrop. 0 = flat, 90 = straight up.
  * @param motorRPM The RPM of the motor.
  */
-function calculateBestGearRatio(bar1Length: number, bar2Length: number, armDistance: number, backdropAngle: number, motorRPM: number): number {
+function calculateBestGearRatio(bar1Length: number, bar2Length: number, armDistance: number, backdropAngle: number, motorRPM: number): number[] {
   let bestRatio = 0;
   let bestHeight = 0;
   let bestLen = 0;
@@ -120,5 +136,5 @@ function calculateBestGearRatio(bar1Length: number, bar2Length: number, armDista
       }
     }
   }
-  return bestRatio;
+  return [bestRatio, bestHeight, bestLen];
 }
